@@ -8,5 +8,4 @@ As the NZ COVID Pass spec is very similar to the EU Digital COVID Certificate, t
 
 # TODO
 
-- tests
 - parse `https://nzcp.covid19.health.nz/.well-known/did.json` for certificates rather than hardcoded string
