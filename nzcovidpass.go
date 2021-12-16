@@ -23,6 +23,13 @@ const JWK string = `{
 			"crv":"P-256",
 			 "x":"zRR-XGsCp12Vvbgui4DD6O6cqmhfPuXMhi1OxPl8760",
 			 "y":"Iv5SU6FuW-TRYh5_GOrJlcV_gpF_GpFQhCOD8LSk3T0"
+		},
+		{
+			"kid": "z12Kf7UQ",
+			"kty": "EC",
+			"crv":"P-256",
+			 "x":"DQCKJusqMsT0u7CjpmhjVGkHln3A3fS-ayeH4Nu52tc",
+			 "y":"lxgWzsLtVI8fqZmTPPo9nZ-kzGs7w7XO8-rUU68OxmI"
 		}
 	]
 }
