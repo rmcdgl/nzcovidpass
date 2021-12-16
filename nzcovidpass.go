@@ -290,3 +290,11 @@ var DefaultDecoder = &Decoder{}
 func Decode(qrdata string) (*Unverified, error) {
 	return DefaultDecoder.Decode(qrdata)
 }
+
+func DecodeAndVerify(qrdata string, certprov PublicKeyProvider) (*Decoded, error) {
+	unverified, err := Decode(qrdata)
+	if err != nil {
+		return nil, err
+	}
+	return unverified.Verify(certprov)
+}
