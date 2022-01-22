@@ -273,7 +273,7 @@ func (d *Decoder) Decode(qrdata string) (*Unverified, error) {
 		return nil, err
 	}
 
-	coseData, err := base32.StdEncoding.DecodeString(unprefixed)
+	coseData, err := base32.StdEncoding.WithPadding(base32.NoPadding).DecodeString(unprefixed)
 	if err != nil {
 		return nil, err
 	}
