@@ -20,7 +20,7 @@ func main() {
 		return
 	}
 
-	certProv, _ := nzcovidpass.NewNZCertificateProvider()
+	certProv, _ := nzcovidpass.NewNZTestCertificateProvider()
 
 	decoded, err := unverified.Verify(certProv)
 	if err != nil {

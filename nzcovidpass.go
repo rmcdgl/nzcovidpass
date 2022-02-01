@@ -15,15 +15,8 @@ import (
 	"github.com/veraison/go-cose"
 )
 
-const JWK string = `{
+const officialKeys string = `{
 	"keys": [ 
-		{
-			"kid": "key-1",
-			"kty": "EC",
-			"crv":"P-256",
-			 "x":"zRR-XGsCp12Vvbgui4DD6O6cqmhfPuXMhi1OxPl8760",
-			 "y":"Iv5SU6FuW-TRYh5_GOrJlcV_gpF_GpFQhCOD8LSk3T0"
-		},
 		{
 			"kid": "z12Kf7UQ",
 			"kty": "EC",
@@ -34,6 +27,18 @@ const JWK string = `{
 	]
 }
 `
+
+const testKeys string = `{
+	"keys": [ 
+		{
+			"kid": "key-1",
+			"kty": "EC",
+			"crv":"P-256",
+			 "x":"zRR-XGsCp12Vvbgui4DD6O6cqmhfPuXMhi1OxPl8760",
+			 "y":"Iv5SU6FuW-TRYh5_GOrJlcV_gpF_GpFQhCOD8LSk3T0"
+		}
+	]
+}`
 
 // Decoded is a NZ COVID Pass
 type Decoded struct {
@@ -100,7 +105,7 @@ func (prov pubkeyOnlyCertificateProvider) GetPublicKey(kid []byte) (crypto.Publi
 
 func NewNZCertificateProvider() (PublicKeyProvider, error) {
 
-	set, err := jwk.ParseString(JWK)
+	set, err := jwk.ParseString(officialKeys)
 
 	if err != nil {
 		return nil, err
@@ -111,7 +116,6 @@ func NewNZCertificateProvider() (PublicKeyProvider, error) {
 	for it := set.Iterate(context.Background()); it.Next(context.Background()); {
 		pair := it.Pair()
 		key := pair.Value.(jwk.Key)
-		key.KeyType()
 
 		var rawkey ecdsa.PublicKey
 		if err := key.Raw(&rawkey); err != nil {
@@ -122,6 +126,33 @@ func NewNZCertificateProvider() (PublicKeyProvider, error) {
 	}
 
 	return &pubkeyOnlyCertificateProvider{pubKeys: keys}, nil
+}
+
+func NewNZTestCertificateProvider() (PublicKeyProvider, error) {
+	c, err := NewNZCertificateProvider()
+	if err != nil {
+		return nil, err
+	}
+
+	set, err := jwk.ParseString(testKeys)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for it := set.Iterate(context.Background()); it.Next(context.Background()); {
+		pair := it.Pair()
+		key := pair.Value.(jwk.Key)
+
+		var rawkey ecdsa.PublicKey
+		if err := key.Raw(&rawkey); err != nil {
+			return nil, err
+		}
+
+		c.(*pubkeyOnlyCertificateProvider).pubKeys[key.KeyID()] = &rawkey
+	}
+
+	return c, nil
 }
 
 func (u *unverifiedCOSE) verify(expired func(time.Time) bool, certprov PublicKeyProvider) error {
